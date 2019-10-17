@@ -206,17 +206,22 @@ function isMatch(value, other) {
 
   for (let i = 0; i < otherParams.length; i++) {
     let prop = otherParams[i];
-
-    if (!isEqual(value[prop], otherParams[prop])) return false;
+    if (!isEqual(value[prop], other[prop])) return false;
   }
+
+  return true;
 }
 
 function hasMatch(value, other) {
   if (!isArray(value)) return false;
 
   for (let i = 0; i < value.length; i++) {
-    value[i];
+    if (isMatch(value[i], other)) {
+      return true;
+    }
   }
+
+  return false;
 }
 
 module.exports = {
@@ -241,5 +246,7 @@ module.exports = {
   isEqualObject,
   isEqualArray,
   isEqualDate,
-  isEqual
+  isEqual,
+  isMatch,
+  hasMatch
 };
