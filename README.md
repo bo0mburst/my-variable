@@ -41,3 +41,10 @@ if (myvariable.isNumber(x)) {
 - .isEqual(variable, other) : Checks if 2 variables are equal
 - .isMatch(obj, other) : Checks if obj has equivalent properties of other (object)
 - .hasMatch(array, other) : Checks if atleast one of the array of objects has an equivalent properties of other (object)
+
+## Notes
+
+- 2 arrays are equal if both has the same elements with the same values and type in the same order
+- 2 objects are equal if both has the same property with the same values and type in any order
+- isEqual, isEqualArray, isEqualObject, isMatch and hasMatch can check nested elements
+  but return false if an element has a type function or file. It is only applicable Objects, Arrays, Dates and primitive types.

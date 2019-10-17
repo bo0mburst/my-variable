@@ -1,7 +1,9 @@
 const myvariable = require("./index.js");
 
-let x = { age: 12, name: "a", j: function() {} };
+let x = { name: "a", age: 30 };
 
-let y = { age: 30 };
+let y = { age: 30, name: "a" };
 
-console.log(myvariable.isMatch(x, y));
+// console.log(myvariable.hasMatch(x, y));
+
+console.log(myvariable.isEqualObject(x, y));

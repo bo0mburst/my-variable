@@ -1,18 +1,18 @@
 // Type Checking
 
-function checkType(variable) {
+const checkType = variable => {
   return Object.prototype.toString.call(variable).slice(8, -1);
-}
+};
 
-function isUndefined(variable) {
+const isUndefined = variable => {
   return checkType(variable) === "Undefined";
-}
+};
 
-function isNull(variable) {
+const isNull = variable => {
   return checkType(variable) === "Null";
-}
+};
 
-function isEmpty(variable) {
+const isEmpty = variable => {
   if (isNumber(variable) || isBoolean(variable)) {
     return false;
   }
@@ -28,41 +28,41 @@ function isEmpty(variable) {
   if (isObject(variable)) {
     return !Object.keys(variable).length;
   }
-}
+};
 
-function isString(variable) {
+const isString = variable => {
   return checkType(variable) === "String";
-}
+};
 
-function isNumber(variable) {
+const isNumber = variable => {
   return checkType(variable) === "Number";
-}
+};
 
-function isBoolean(variable) {
+const isBoolean = variable => {
   return checkType(variable) === "Boolean";
-}
+};
 
-function isDate(variable) {
+const isDate = variable => {
   return checkType(variable) === "Date";
-}
+};
 
-function isDateString(variable) {
+const isDateString = variable => {
   return isString(variable) && !NaN(Date.parse(variable));
-}
+};
 
-function isObject(variable) {
+const isObject = variable => {
   return checkType(variable) === "Object";
-}
+};
 
-function isArray(variable) {
+const isArray = variable => {
   return Array.isArray(variable);
-}
+};
 
-function isFunction(variable) {
+const isFunction = variable => {
   return checkType(variable) === "Function";
-}
+};
 
-function isURL(variable) {
+const isURL = variable => {
   if (!isString(variable)) return false;
 
   let pattern = new RegExp(
@@ -76,23 +76,23 @@ function isURL(variable) {
   );
 
   return !!pattern.test(variable);
-}
+};
 
-function isEmail(variable) {
+const isEmail = variable => {
   let pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
   return !!pattern.test(variable);
-}
+};
 
-function isFile(variable, ext) {
+const isFile = (variable, ext) => {
   if (checkType(variable) !== "File") return false;
 
   if (ext && !hasExtension(variable, ext)) return false;
 
   return true;
-}
+};
 
-function isImage(variable, ext) {
+const isImage = (variable, ext) => {
   if (!isFile(variable)) return false;
 
   if (variable["type"].split("/")[0] !== "image") return false;
@@ -100,9 +100,9 @@ function isImage(variable, ext) {
   if (ext && !hasExtension(variable, ext)) return false;
 
   return true;
-}
+};
 
-function isVideo(variable, ext) {
+const isVideo = (variable, ext) => {
   if (!isFile(variable)) return false;
 
   if (variable["type"].split("/")[0] !== "video") return false;
@@ -110,9 +110,9 @@ function isVideo(variable, ext) {
   if (ext && !hasExtension(variable, ext)) return false;
 
   return true;
-}
+};
 
-function isAudio(variable, ext) {
+const isAudio = (variable, ext) => {
   if (!isFile(variable)) return false;
 
   if (variable["type"].split("/")[0] !== "audio") return false;
@@ -120,11 +120,11 @@ function isAudio(variable, ext) {
   if (ext && !hasExtension(variable, ext)) return false;
 
   return true;
-}
+};
 
 // Check Equality
 
-function isEqual(variable, other) {
+const isEqual = (variable, other) => {
   if (checkType(variable) !== checkType(other)) {
     return false;
   }
@@ -151,14 +151,14 @@ function isEqual(variable, other) {
   }
 
   return true;
-}
+};
 
-function isEqualDate(date, other) {
+const isEqualDate = (date, other) => {
   if (!isDate(date) || !isDate(other)) return false;
   return date.getTime() === other.getTime();
-}
+};
 
-function isEqualObject(obj, other) {
+const isEqualObject = (obj, other) => {
   if (!isObject(obj) || !isObject(other)) return false;
 
   let objProp = Object.getOwnPropertyNames(obj);
@@ -166,63 +166,38 @@ function isEqualObject(obj, other) {
 
   if (objProp.length !== otherProp.length) return false;
 
-  for (let i = 0; i < objProp.length; i++) {
-    let prop = objProp[i];
+  return objProp.every(i => isEqual(obj[i], other[i]));
+};
 
-    if (!isEqual(obj[prop], other[prop])) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function isEqualArray(array, other) {
+const isEqualArray = (array, other) => {
   if (!isArray(array) || !isArray(other)) return false;
 
   if (array.length !== other.length) return false;
 
-  for (let i = 0; i < array.length; i++) {
-    if (!isEqual(array[i], other[i])) {
-      return false;
-    }
-  }
-
-  return true;
-}
+  return array.every(i => other.every(j => isEqual(i, j)));
+};
 
 // Has
-function hasExtension(variable, ext) {
+const hasExtension = (variable, ext) => {
   let extension = variable.name.split(".").pop();
   if (!(!!ext.indexOf && variable)) return false;
 
   return ext.indexOf(extension) > -1;
-}
+};
 
-function isMatch(obj, other) {
+const isMatch = (obj, other) => {
   if (!isObject(obj) || !isObject(other)) return false;
 
   let otherParams = Object.getOwnPropertyNames(other);
 
-  for (let i = 0; i < otherParams.length; i++) {
-    let prop = otherParams[i];
-    if (!isEqual(obj[prop], other[prop])) return false;
-  }
+  return otherParams.every(i => isEqual(obj[i], other[i]));
+};
 
-  return true;
-}
-
-function hasMatch(array, obj) {
+const hasMatch = (array, obj) => {
   if (!isArray(array)) return false;
 
-  for (let i = 0; i < array.length; i++) {
-    if (isMatch(array[i], obj)) {
-      return true;
-    }
-  }
-
-  return false;
-}
+  return array.every(i => isMatch(i, obj));
+};
 
 module.exports = {
   checkType,
