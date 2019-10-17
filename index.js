@@ -1,69 +1,69 @@
 // Type Checking
 
-function checkType(value) {
-  return Object.prototype.toString.call(value).slice(8, -1);
+function checkType(variable) {
+  return Object.prototype.toString.call(variable).slice(8, -1);
 }
 
-function isUndefined(value) {
-  return checkType(value) === "Undefined";
+function isUndefined(variable) {
+  return checkType(variable) === "Undefined";
 }
 
-function isNull(value) {
-  return checkType(value) === "Null";
+function isNull(variable) {
+  return checkType(variable) === "Null";
 }
 
-function isEmpty(value) {
-  if (isNumber(value) || isBoolean(value)) {
+function isEmpty(variable) {
+  if (isNumber(variable) || isBoolean(variable)) {
     return false;
   }
 
-  if (isUndefined(value) || isNull(value)) {
+  if (isUndefined(variable) || isNull(variable)) {
     return true;
   }
 
-  if (isString(value) || isArray(value)) {
-    return value.length === 0;
+  if (isString(variable) || isArray(variable)) {
+    return variable.length === 0;
   }
 
-  if (isObject(value)) {
-    return !Object.keys(value).length;
+  if (isObject(variable)) {
+    return !Object.keys(variable).length;
   }
 }
 
-function isString(value) {
-  return checkType(value) === "String";
+function isString(variable) {
+  return checkType(variable) === "String";
 }
 
-function isNumber(value) {
-  return checkType(value) === "Number";
+function isNumber(variable) {
+  return checkType(variable) === "Number";
 }
 
-function isBoolean(value) {
-  return checkType(value) === "Boolean";
+function isBoolean(variable) {
+  return checkType(variable) === "Boolean";
 }
 
-function isDate(value) {
-  return checkType(value) === "Date";
+function isDate(variable) {
+  return checkType(variable) === "Date";
 }
 
-function isDateString(value) {
-  return isString(value) && !NaN(Date.parse(value));
+function isDateString(variable) {
+  return isString(variable) && !NaN(Date.parse(variable));
 }
 
-function isObject(value) {
-  return checkType(value) === "Object";
+function isObject(variable) {
+  return checkType(variable) === "Object";
 }
 
-function isArray(value) {
-  return Array.isArray(value);
+function isArray(variable) {
+  return Array.isArray(variable);
 }
 
-function isFunction(value) {
-  return checkType(value) === "Function";
+function isFunction(variable) {
+  return checkType(variable) === "Function";
 }
 
-function isURL(value) {
-  if (!isString(value)) return false;
+function isURL(variable) {
+  if (!isString(variable)) return false;
 
   let pattern = new RegExp(
     "^(https?:\\/\\/)?" +
@@ -75,77 +75,77 @@ function isURL(value) {
     "i"
   );
 
-  return !!pattern.test(value);
+  return !!pattern.test(variable);
 }
 
-function isEmail(value) {
+function isEmail(variable) {
   let pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-  return !!pattern.test(value);
+  return !!pattern.test(variable);
 }
 
-function isFile(value, ext) {
-  if (checkType(value) !== "File") return false;
+function isFile(variable, ext) {
+  if (checkType(variable) !== "File") return false;
 
-  if (ext && !hasExtension(value, ext)) return false;
+  if (ext && !hasExtension(variable, ext)) return false;
 
   return true;
 }
 
-function isImage(value, ext) {
-  if (!isFile(value)) return false;
+function isImage(variable, ext) {
+  if (!isFile(variable)) return false;
 
-  if (value["type"].split("/")[0] !== "image") return false;
+  if (variable["type"].split("/")[0] !== "image") return false;
 
-  if (ext && !hasExtension(value, ext)) return false;
-
-  return true;
-}
-
-function isVideo(value, ext) {
-  if (!isFile(value)) return false;
-
-  if (value["type"].split("/")[0] !== "video") return false;
-
-  if (ext && !hasExtension(value, ext)) return false;
+  if (ext && !hasExtension(variable, ext)) return false;
 
   return true;
 }
 
-function isAudio(value, ext) {
-  if (!isFile(value)) return false;
+function isVideo(variable, ext) {
+  if (!isFile(variable)) return false;
 
-  if (value["type"].split("/")[0] !== "audio") return false;
+  if (variable["type"].split("/")[0] !== "video") return false;
 
-  if (ext && !hasExtension(value, ext)) return false;
+  if (ext && !hasExtension(variable, ext)) return false;
+
+  return true;
+}
+
+function isAudio(variable, ext) {
+  if (!isFile(variable)) return false;
+
+  if (variable["type"].split("/")[0] !== "audio") return false;
+
+  if (ext && !hasExtension(variable, ext)) return false;
 
   return true;
 }
 
 // Check Equality
 
-function isEqual(value, other) {
-  if (checkType(value) !== checkType(other)) {
+function isEqual(variable, other) {
+  if (checkType(variable) !== checkType(other)) {
     return false;
   }
 
-  if (isObject(value) && !isEqualObject(value, other)) {
+  if (isObject(variable) && !isEqualObject(variable, other)) {
     return false;
   }
 
-  if (isArray(value)) {
-    if (!isEqualArray(value, other)) return false;
+  if (isArray(variable)) {
+    if (!isEqualArray(variable, other)) return false;
   }
 
-  if (isDate(value)) {
-    if (!isEqualDate(value, other)) return false;
+  if (isDate(variable)) {
+    if (!isEqualDate(variable, other)) return false;
   }
 
   if (
-    !isObject(value) &&
-    !isArray(value) &&
-    !isDate(value) &&
-    value !== other
+    !isObject(variable) &&
+    !isArray(variable) &&
+    !isDate(variable) &&
+    variable !== other
   ) {
     return false;
   }
@@ -153,23 +153,23 @@ function isEqual(value, other) {
   return true;
 }
 
-function isEqualDate(value, other) {
-  if (!isDate(value) || !isDate(other)) return false;
-  return value.getTime() === other.getTime();
+function isEqualDate(date, other) {
+  if (!isDate(date) || !isDate(other)) return false;
+  return date.getTime() === other.getTime();
 }
 
-function isEqualObject(value, other) {
-  if (!isObject(value) || !isObject(other)) return false;
+function isEqualObject(obj, other) {
+  if (!isObject(obj) || !isObject(other)) return false;
 
-  let valueProp = Object.getOwnPropertyNames(value);
+  let objProp = Object.getOwnPropertyNames(obj);
   let otherProp = Object.getOwnPropertyNames(other);
 
-  if (valueProp.length !== otherProp.length) return false;
+  if (objProp.length !== otherProp.length) return false;
 
-  for (let i = 0; i < valueProp.length; i++) {
-    let prop = valueProp[i];
+  for (let i = 0; i < objProp.length; i++) {
+    let prop = objProp[i];
 
-    if (!isEqual(value[prop], other[prop])) {
+    if (!isEqual(obj[prop], other[prop])) {
       return false;
     }
   }
@@ -177,13 +177,13 @@ function isEqualObject(value, other) {
   return true;
 }
 
-function isEqualArray(value, other) {
-  if (!isArray(value) || !isArray(other)) return false;
+function isEqualArray(array, other) {
+  if (!isArray(array) || !isArray(other)) return false;
 
-  if (value.length !== other.length) return false;
+  if (array.length !== other.length) return false;
 
-  for (let i = 0; i < value.length; i++) {
-    if (!isEqual(value[i], other[i])) {
+  for (let i = 0; i < array.length; i++) {
+    if (!isEqual(array[i], other[i])) {
       return false;
     }
   }
@@ -192,31 +192,31 @@ function isEqualArray(value, other) {
 }
 
 // Has
-function hasExtension(value, ext) {
-  let extension = value.name.split(".").pop();
-  if (!(!!ext.indexOf && value)) return false;
+function hasExtension(variable, ext) {
+  let extension = variable.name.split(".").pop();
+  if (!(!!ext.indexOf && variable)) return false;
 
   return ext.indexOf(extension) > -1;
 }
 
-function isMatch(value, other) {
-  if (!isObject(value) || !isObject(other)) return false;
+function isMatch(obj, other) {
+  if (!isObject(obj) || !isObject(other)) return false;
 
   let otherParams = Object.getOwnPropertyNames(other);
 
   for (let i = 0; i < otherParams.length; i++) {
     let prop = otherParams[i];
-    if (!isEqual(value[prop], other[prop])) return false;
+    if (!isEqual(obj[prop], other[prop])) return false;
   }
 
   return true;
 }
 
-function hasMatch(value, other) {
-  if (!isArray(value)) return false;
+function hasMatch(array, obj) {
+  if (!isArray(array)) return false;
 
-  for (let i = 0; i < value.length; i++) {
-    if (isMatch(value[i], other)) {
+  for (let i = 0; i < array.length; i++) {
+    if (isMatch(array[i], obj)) {
       return true;
     }
   }
